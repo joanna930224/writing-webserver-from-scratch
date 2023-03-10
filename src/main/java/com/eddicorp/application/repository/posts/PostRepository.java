@@ -6,6 +6,8 @@ import java.util.List;
 
 public interface PostRepository {
 
+    //repository Impl로 요청
     void save(Post post);
+
     List<Post> findAll();
 }

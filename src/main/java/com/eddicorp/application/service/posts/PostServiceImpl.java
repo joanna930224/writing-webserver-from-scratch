@@ -12,6 +12,7 @@ public class PostServiceImpl implements PostService {
     @Override
     public void write(String author, String title, String content) {
         final Post newPost = new Post(author, title, content);
+        //post 전달
         repository.save(newPost);
     }
 

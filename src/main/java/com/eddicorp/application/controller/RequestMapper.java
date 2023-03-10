@@ -14,6 +14,7 @@ public class RequestMapper {
         this.method = method;
     }
 
+    // HashMap 을 사용하기 위해서 equals 와 hashCode 만들어 줌 !
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;

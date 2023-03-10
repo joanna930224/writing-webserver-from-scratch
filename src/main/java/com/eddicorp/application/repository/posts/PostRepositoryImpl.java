@@ -19,7 +19,7 @@ public class PostRepositoryImpl implements PostRepository {
     }
 
     private final Map<String, Post> postDb = new HashMap<>();
-
+    //postDb Map에다가 저장하도록 만들어줌
     @Override
     public void save(Post post) {
         postDb.put(post.getId(), post);

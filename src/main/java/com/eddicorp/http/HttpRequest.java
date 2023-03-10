@@ -24,8 +24,11 @@ public class HttpRequest {
     public HttpRequest(final InputStream inputStream) throws IOException {
         final String requestLine = readLine(inputStream);
         final String[] partsOfRequestLine = requestLine.split(" ");
+        // 0번째가 method
         this.httpMethod = HttpMethod.valueOf(partsOfRequestLine[0]);
+        // 1번째가 uri
         final String[] uriAndQueryString = partsOfRequestLine[1].split("\\?");
+        // trim 해주기
         this.uri = uriAndQueryString[0].trim();
         parseHeaders(inputStream);
         final byte[] rawBody = parseBody(inputStream);
@@ -51,11 +54,15 @@ public class HttpRequest {
         final String contentType = headerMap.get("Content-Type");
         if ("application/x-www-form-urlencoded".equals(contentType) && rawBody != null) {
             final String urlEncodedForm = new String(rawBody);
+            //한글 문자열 디코드 해주기
             final String decoded = URLDecoder.decode(urlEncodedForm, StandardCharsets.UTF_8.name());
             final String[] keyAndValues = decoded.split("&");
             for (String keyAndValue : keyAndValues) {
+                // form 형태 뜯기!
+                // form = title=%어쩌구&content=%어쩌구
                 final String[] split = keyAndValue.split("=");
                 if (split.length > 1) {
+                    //맵에 저장 -> 쓸 수 있게 getParameter 메서드 만들어줌
                     parameterMap.put(split[0].trim(), split[1].trim());
                 }
             }
@@ -63,6 +70,7 @@ public class HttpRequest {
     }
 
     private void parseHeaders(InputStream inputStream) throws IOException {
+        //헤더 읽기
         String rawHeader;
         while (!"".equals((rawHeader = readLine(inputStream)))) {
             final String[] headerAndValues = rawHeader.split(":");
@@ -90,6 +98,8 @@ public class HttpRequest {
     }
 
     private static byte[] parseBody(InputStream inputStream) throws IOException {
+        //읽을게 남아있을 때만 읽을 수 있도록!
+        // content length == available
         if (inputStream.available() > 0) {
             final byte[] bodyBytes = new byte[inputStream.available()];
             inputStream.read(bodyBytes);

@@ -14,6 +14,7 @@ public class RootController implements Controller {
     private static final String STATIC_FILE_PATH = "pages";
     private static final Map<RequestMapper, Controller> requestMap = new HashMap<>();
 
+    // method 요청 구분하기
     static {
         final RequestMapper mapWritePost = new RequestMapper("/post", HttpMethod.POST);
         requestMap.put(mapWritePost, new WritePostApiController());
@@ -33,10 +34,17 @@ public class RootController implements Controller {
 
     @Override
     public void handle(HttpRequest request, HttpResponse response) {
+        // @GetMapping("/users")
+        // method = GET
+        // uri - "/users"
         final String uri = request.getUri();
+
+        // Request mapper 를 통해서
         final RequestMapper requestMapper = new RequestMapper(uri, request.getHttpMethod());
+        //Controller map 에서 조회하면 컨트롤러가 위치할 것 임
         final Controller maybeController = requestMap.get(requestMapper);
         System.out.println("maybeController = " + maybeController);
+        // null 이 아니면 처리할 컨트롤러가 있다는 것이니 처리해주면 됨
         if (maybeController != null) {
             maybeController.handle(request, response);
             return;
@@ -46,6 +54,8 @@ public class RootController implements Controller {
         System.out.println("pathToLoad = " + pathToLoad);
         final URL maybeResource = this.getClass().getClassLoader().getResource(pathToLoad);
         System.out.println("maybeResource = " + maybeResource);
+
+        // staticFileController 실행
         if (maybeResource != null) {
             staticFileController.handle(request, response);
             return;
